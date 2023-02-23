@@ -8,6 +8,8 @@ public class KafkaProperties {
     private String uniqueUrlsTopic;
     private String crawlersGroup;
     private String unifiersGroup;
+    private String graphTopic;
+    private String graphGroup;
 
     public String getRawUrlsTopic() {
         return rawUrlsTopic;
@@ -39,5 +41,21 @@ public class KafkaProperties {
 
     public void setUnifiersGroup(String unifiersGroup) {
         this.unifiersGroup = unifiersGroup;
+    }
+
+    public String getGraphTopic() {
+        return graphTopic;
+    }
+
+    public void setGraphTopic(String graphTopic) {
+        this.graphTopic = graphTopic;
+    }
+
+    public String getGraphGroup() {
+        return graphGroup;
+    }
+
+    public void setGraphGroup(String graphGroup) {
+        this.graphGroup = graphGroup;
     }
 }

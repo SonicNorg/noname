@@ -11,11 +11,13 @@ import java.net.URL;
 @Service
 public class UrlsConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(UrlsConsumer.class);
-    private final UrlsProducer producer;
+    private final UrlsProducer urlsProducer;
+    private final PageProducer pageProducer;
     private final LinksExtractor extractor;
 
-    public UrlsConsumer(UrlsProducer producer, LinksExtractor extractor) {
-        this.producer = producer;
+    public UrlsConsumer(UrlsProducer urlsProducer, PageProducer pageProducer, LinksExtractor extractor) {
+        this.urlsProducer = urlsProducer;
+        this.pageProducer = pageProducer;
         this.extractor = extractor;
     }
 
@@ -23,7 +25,7 @@ public class UrlsConsumer {
     public void onReceiveNewUrl(URL url) {
         LOGGER.info("Received URL {}", url);
         Page page = extractor.extractLinks(url);
-        //TODO отправить page в очередь графопостроителя
-        producer.produceUrls(page.getUrls());
+        pageProducer.producePage(page);
+        urlsProducer.produceUrls(page.getUrls());
     }
 }

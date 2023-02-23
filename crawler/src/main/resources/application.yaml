@@ -6,6 +6,8 @@ wiki-config:
   unique-urls-topic: unique-urls
   crawlers-group: crawlers
   unifiers-group: unifiers
+  graph-topic: graph
+  graph-group: graph
 
 spring:
   application:

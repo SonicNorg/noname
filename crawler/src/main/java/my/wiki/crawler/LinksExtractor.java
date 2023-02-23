@@ -1,5 +1,6 @@
 package my.wiki.crawler;
 
+import my.wiki.common.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,32 +17,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
-
 @Service
 public class LinksExtractor {
     private static final String PREFIX = "https://ru.wikipedia.org";
     private final Pattern regex = Pattern.compile("<a href=\"(/[^#\"]+)");
 
     private final RestTemplate restTemplate;
+    private final DateExtractor dateExtractor;
 
-    public LinksExtractor(RestTemplate restTemplate) {
+    public LinksExtractor(RestTemplate restTemplate, DateExtractor dateExtractor) {
         this.restTemplate = restTemplate;
+        this.dateExtractor = dateExtractor;
     }
 
-
-    public List<URL> extractLinks(URL url) {
+    public Page extractLinks(URL url) {
         ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return getRelativeUrlsFromPage(response.getBody()).stream().map(str -> {
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            String content = response.getBody();
+            List<URL> urls = getRelativeUrlsFromPage(content).stream().map(str -> {
                 try {
                     return new URL(PREFIX.concat(str));
                 } catch (MalformedURLException e) {
                     return null;
                 }
             }).filter(Objects::nonNull).collect(Collectors.toList());
+            return new Page(url, dateExtractor.extract(content), LocalDate.now(), urls);
         } else {
-            return emptyList();
+            return null;
         }
     }
 

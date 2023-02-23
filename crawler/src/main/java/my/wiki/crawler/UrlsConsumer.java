@@ -1,5 +1,6 @@
 package my.wiki.crawler;
 
+import my.wiki.common.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -21,6 +22,8 @@ public class UrlsConsumer {
     @KafkaListener(topics = "${wiki-config.unique-urls-topic}", groupId = "${wiki-config.crawlers-group}")
     public void onReceiveNewUrl(URL url) {
         LOGGER.info("Received URL {}", url);
-        producer.produceUrls(extractor.extractLinks(url));
+        Page page = extractor.extractLinks(url);
+        //TODO отправить page в очередь графопостроителя
+        producer.produceUrls(page.getUrls());
     }
 }

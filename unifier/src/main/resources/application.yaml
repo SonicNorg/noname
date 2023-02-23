@@ -1,0 +1,18 @@
+server:
+  port: 10002
+
+wiki-config:
+  raw-urls-topic: raw-urls
+  unique-urls-topic: unique-urls
+  crawlers-group: crawlers
+  unifiers-group: unifiers
+
+spring:
+  application:
+    name: URL Unifier
+  kafka:
+    bootstrap-servers: localhost:9092
+logging:
+  level:
+    root: info
+    my.wiki: debug

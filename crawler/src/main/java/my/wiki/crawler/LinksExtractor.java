@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class LinksExtractor {
     private static final String PREFIX = "https://ru.wikipedia.org";
-    private final Pattern regex = Pattern.compile("<a href=\"(/[^#\"]+)");
+    private final Pattern regex = Pattern.compile("<a href=\"(/wiki/[^#\"]+)");
 
     private final RestTemplate restTemplate;
     private final DateExtractor dateExtractor;
@@ -30,14 +32,14 @@ public class LinksExtractor {
         this.dateExtractor = dateExtractor;
     }
 
-    public Page extractLinks(URL url) {
+    public Page extractLinks(URI url) {
         ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
             String content = response.getBody();
-            List<URL> urls = getRelativeUrlsFromPage(content).stream().map(str -> {
+            List<URI> urls = getRelativeUrlsFromPage(content).stream().map(str -> {
                 try {
-                    return new URL(PREFIX.concat(str));
-                } catch (MalformedURLException e) {
+                    return new URI(java.net.URLDecoder.decode(new URI(PREFIX.concat(str)).toString(), StandardCharsets.UTF_8));
+                } catch (URISyntaxException e) {
                     return null;
                 }
             }).filter(Objects::nonNull).collect(Collectors.toList());

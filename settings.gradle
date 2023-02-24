@@ -12,4 +12,5 @@ include 'crawler'
 include 'graph'
 include 'unifier'
 include 'common'
+include 'graph-api'
 

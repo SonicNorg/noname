@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.net.URL;
+import java.net.URI;
 
 @Service
 public class UrlsConsumer {
@@ -22,10 +22,10 @@ public class UrlsConsumer {
     }
 
     @KafkaListener(topics = "${wiki-config.unique-urls-topic}", groupId = "${wiki-config.crawlers-group}")
-    public void onReceiveNewUrl(URL url) {
+    public void onReceiveNewUrl(URI url) {
         LOGGER.info("Received URL {}", url);
         Page page = extractor.extractLinks(url);
         pageProducer.producePage(page);
-        urlsProducer.produceUrls(page.getUrls());
+        urlsProducer.produceUrls(page.getUris());
     }
 }

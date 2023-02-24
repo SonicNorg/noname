@@ -1,36 +1,40 @@
 package my.wiki.common;
 
-import java.net.URL;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
 public class Page {
-    private URL url;
+    private URI uri;
     private LocalDate lastChangeDate;
     private LocalDate visitedDate;
-    private List<URL> urls;
+    private List<URI> uris;
 
-    public Page(URL url, LocalDate lastChangeDate, LocalDate visitedDate, List<URL> urls) {
-        this.url = url;
+    //Для десериализации нужен конструктор по умолчанию
+    public Page() {
+    }
+
+    public Page(URI uri, LocalDate lastChangeDate, LocalDate visitedDate, List<URI> uris) {
+        this.uri = uri;
         this.lastChangeDate = lastChangeDate;
         this.visitedDate = visitedDate;
-        this.urls = urls;
+        this.uris = uris;
     }
 
-    public URL getUrl() {
-        return url;
+    public URI getUri() {
+        return uri;
     }
 
-    public void setUrl(URL url) {
-        this.url = url;
+    public void setUri(URI url) {
+        this.uri = url;
     }
 
-    public List<URL> getUrls() {
-        return urls;
+    public List<URI> getUris() {
+        return uris;
     }
 
-    public void setUrls(List<URL> urls) {
-        this.urls = urls;
+    public void setUris(List<URI> urls) {
+        this.uris = urls;
     }
 
     public LocalDate getLastChangeDate() {

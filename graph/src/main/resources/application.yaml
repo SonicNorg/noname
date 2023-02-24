@@ -6,12 +6,19 @@ wiki-config:
   unique-urls-topic: unique-urls
   crawlers-group: crawlers
   unifiers-group: unifiers
+  graph-topic: graph-topic
+  graph-group: graphs
 
 spring:
   application:
     name: Graph Builder
   kafka:
     bootstrap-servers: localhost:9092
+  datasource:
+    password: abc123
+    url: jdbc:postgresql://localhost:5432/default
+    driver-class-name: org.postgresql.Driver
+    username: sa
 logging:
   level:
     root: info

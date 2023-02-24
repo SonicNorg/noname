@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:2.7.9"
+        classpath "org.openapitools:openapi-generator-gradle-plugin:6.4.0"
     }
 }
 
@@ -56,9 +57,13 @@ configure(project(":crawler")) {
 }
 
 configure(project(":graph")) {
-    //TODO убрать после создания main-класса
-    bootJar {
-        enabled = false
+    dependencies {
+        implementation('org.springframework.kafka:spring-kafka')
+        implementation 'org.postgresql:postgresql:42.5.4'
+        implementation 'org.flywaydb:flyway-core:9.15.1'
+        implementation ('org.springframework.boot:spring-boot-starter-data-jpa')
+        implementation(project(":graph-api"))
+        implementation(project(":common"))
     }
 }
 
@@ -66,6 +71,64 @@ configure(project(":unifier")) {
     //TODO убрать после создания main-класса
     bootJar {
         enabled = false
+    }
+}
+
+configure(project(":graph-api")) {
+    apply plugin: "java"
+    apply plugin: "org.openapi.generator"
+
+    jar {
+        archiveClassifier = ""
+    }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+    compileJava.dependsOn tasks.openApiGenerate
+
+    dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-web"
+        implementation "org.springframework.boot:spring-boot-starter-validation"
+
+        implementation 'io.springfox:springfox-oas:3.0.0'
+        implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+        implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+        implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
+
+    openApiGenerate {
+        generatorName = "spring"
+        inputSpec = "$projectDir/api.yaml".toString()
+        outputDir = "$buildDir/generated".toString()
+        apiPackage = "my.wiki.api"
+        invokerPackage = "my.wiki.api"
+        modelPackage = "my.wiki.api.model"
+        library = "spring-boot"
+        version = "${rootProject.version}"
+        group = "my.wiki.api"
+        configOptions = [
+                dateLibrary                : "java8",
+                skipDefaultInterface       : "true",
+                interfaceOnly              : "true",
+                useTags                    : "true",
+                oas3                       : "true",
+                legacyDiscriminatorBehavior: "false"
+        ]
+    }
+    sourceSets {
+        main {
+            java {
+                srcDir(files("${openApiGenerate.outputDir.get()}/src/main/java"))
+            }
+        }
+    }
+
+    tasks {
+        bootJar.enabled(false)
+        bootRun.enabled(false)
     }
 }
 

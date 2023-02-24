@@ -1,5 +1,8 @@
 ---
 version: '3'
+networks:
+  database-network:
+
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
@@ -25,3 +28,20 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  dbp:
+    image: "postgres:12"
+    container_name: postgres12
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data/pgdata
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_ROOT_PASSWORD=abc123
+      - POSTGRES_PASSWORD=abc123
+      - POSTGRES_USER=sa
+      - POSTGRES_DB=default
+      - POSTGRES_INITDB_ARGS="--encoding=UTF8"
+    networks:
+      - database-network

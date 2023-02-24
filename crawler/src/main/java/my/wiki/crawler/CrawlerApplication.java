@@ -25,7 +25,7 @@ public class CrawlerApplication {
         try {
             SpringApplication.run(CrawlerApplication.class, args);
             watch.stop();
-            System.out.println("Crawler context started at " + (watch.getTotalTimeSeconds()) + " seconds");
+            System.out.println("Crawler context started in " + (watch.getTotalTimeSeconds()) + " seconds");
         } catch (Exception e) {
             System.out.println("Unable to start Crawler");
             e.printStackTrace();

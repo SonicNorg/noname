@@ -4,10 +4,10 @@ import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 
-public class UrlSerializer implements Serializer<URL> {
+public class UriSerializer implements Serializer<URI> {
     private final StringSerializer delegate = new StringSerializer();
 
     @Override
@@ -16,12 +16,12 @@ public class UrlSerializer implements Serializer<URL> {
     }
 
     @Override
-    public byte[] serialize(String topic, URL data) {
+    public byte[] serialize(String topic, URI data) {
         return delegate.serialize(topic, data.toString());
     }
 
     @Override
-    public byte[] serialize(String topic, Headers headers, URL data) {
+    public byte[] serialize(String topic, Headers headers, URI data) {
         return delegate.serialize(topic, headers, data.toString());
     }
 

@@ -6,14 +6,15 @@ wiki-config:
   unique-urls-topic: unique-urls
   crawlers-group: crawlers
   unifiers-group: unifiers
-  graph-topic: graph
-  graph-group: graph
+  graph-topic: graph-topic
+  graph-group: graphs
 
 spring:
   application:
     name: Wiki Crawler
   kafka:
     bootstrap-servers: localhost:9092
+
 logging:
   level:
     root: info

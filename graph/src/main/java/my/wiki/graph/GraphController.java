@@ -1,7 +1,7 @@
 package my.wiki.graph;
 
-import my.wiki.api.ServiceApi;
-import my.wiki.api.UiApi;
+import my.wiki.api.GraphApi;
+import my.wiki.common.Page;
 import my.wiki.graph.repository.GraphNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +13,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static my.wiki.common.Util.hash;
+
 @RestController
-public class GraphController implements ServiceApi, UiApi {
+public class GraphController implements GraphApi {
     private final GraphService service;
 
     public GraphController(GraphService service) {
@@ -22,8 +24,12 @@ public class GraphController implements ServiceApi, UiApi {
     }
 
     @Override
-    public ResponseEntity<Boolean> isUnique(URI uri) {
-        return ResponseEntity.ok(service.isUnique(uri));
+    public ResponseEntity<Page> findByUri(URI uri) {
+        try {
+            return ResponseEntity.ok(service.getByCode(hash(uri.toString())));
+        } catch (URISyntaxException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @Override

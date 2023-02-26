@@ -14,6 +14,9 @@ public final class ModelMapper {
     }
 
     public static Page map(GraphNode node) throws URISyntaxException {
+        if (node == null) {
+            return null;
+        }
         return new Page(
                 new URI(node.getUrl()),
                 node.getLastChange(),

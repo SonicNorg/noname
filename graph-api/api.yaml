@@ -2,33 +2,28 @@ openapi: 3.0.3
 info:
   title: Graph API
   version: "1.0"
-tags:
-  - name: ui
-    description: Для использования юзером
-  - name: service
-    description: Для программного взаимодействия
 paths:
-  /is-unique:
+  /find:
     get:
-      tags: [service]
-      operationId: isUnique
+      tags: [graph]
+      operationId: findByUri
       parameters:
         - in: query
-          name: url
+          name: uri
           schema:
             type: string
             format: uri
           required: true
       responses:
         200:
-          description: true if unique, false otherwise
+          description: Found page, null otherwise
           content:
             application/json:
               schema:
-                type: boolean
+                $ref: '#/components/schemas/Page'
   /find-path:
     get:
-      tags: [ui]
+      tags: [graph]
       operationId: findPath
       parameters:
         - in: query
@@ -63,7 +58,7 @@ paths:
           description: Path from src to dst not found
   /count:
     get:
-      tags: [ui, service]
+      tags: [graph]
       operationId: getCount
       responses:
         200:
@@ -73,3 +68,8 @@ paths:
               schema:
                 type: integer
                 format: int32
+components:
+  schemas:
+    Page:
+      type: object
+      properties: {}

@@ -1,12 +1,15 @@
 package my.wiki.graph;
 
+import my.wiki.common.Page;
 import my.wiki.graph.repository.GraphNode;
 import my.wiki.graph.repository.GraphRepository;
+import my.wiki.graph.repository.ModelMapper;
 import my.wiki.graph.repository.PathRepository;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static my.wiki.common.Util.hash;
@@ -21,8 +24,8 @@ public class GraphService {
         this.pathRepo = pathRepo;
     }
 
-    public boolean isUnique(URI url) {
-        return repository.findById(hash(url.toString())).map(node -> node.getVisitedAt() == null).orElse(true);
+    public Page getByCode(int code) throws URISyntaxException {
+        return ModelMapper.map(repository.findById(code).orElse(null));
     }
 
     public List<GraphNode> findPath(URI src, URI dst) throws NodeNotFoundException, MalformedURLException {

@@ -1,4 +1,4 @@
-package my.wiki.crawler;
+package my.wiki.unifier;
 
 import my.wiki.common.KafkaProperties;
 import org.slf4j.Logger;
@@ -6,8 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.net.URI;
-import java.util.List;
+import java.net.URISyntaxException;
 
 @Service
 public class UrlsProducer {
@@ -20,8 +21,13 @@ public class UrlsProducer {
         this.kafkaProperties = kafkaProperties;
     }
 
-    public void produceUrls(List<URI> uris) {
-        LOGGER.info("Publishing uris: {}", uris);
-        uris.forEach(uri -> kafkaTemplate.send(kafkaProperties.getRawUrlsTopic(), uri));
+    @PostConstruct
+    public void initial() throws URISyntaxException {
+        produceUrl(new URI("https://ru.wikipedia.org/wiki/Большая_семёрка"));
+    }
+
+    public void produceUrl(URI uri) {
+        LOGGER.info("Publishing uri: {}", uri);
+        kafkaTemplate.send(kafkaProperties.getUniqueUrlsTopic(), uri);
     }
 }

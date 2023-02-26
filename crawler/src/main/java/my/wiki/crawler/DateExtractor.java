@@ -15,7 +15,10 @@ public class DateExtractor {
 
     public LocalDate extract(String content) {
         Matcher matcher = regexLastChange.matcher(content);
-        matcher.find();
-        return matcher.group(1) != null ? LocalDate.parse(matcher.group(1), dateTimeFormatter) : null;
+        if (matcher.find()) {
+            return matcher.group(1) != null ? LocalDate.parse(matcher.group(1), dateTimeFormatter) : null;
+        } else {
+            return LocalDate.now().plusMonths(1);
+        }
     }
 }

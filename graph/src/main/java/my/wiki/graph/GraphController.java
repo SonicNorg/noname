@@ -24,29 +24,23 @@ public class GraphController implements GraphApi {
     }
 
     @Override
-    public ResponseEntity<Page> findByUri(URI uri) {
+    public ResponseEntity<Page> findByUri(String uri) {
         try {
-            return ResponseEntity.ok(service.getByCode(hash(uri.toString())));
+            return ResponseEntity.ok(service.getByCode(hash(new URI(uri).toString())));
         } catch (URISyntaxException e) {
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @Override
-    public ResponseEntity<List<URI>> findPath(URI src, URI dst) {
+    public ResponseEntity<List<String>> findPath(String src, String dst) {
         try {
-            List<GraphNode> path = service.findPath(src, dst);
-            return ResponseEntity.ok(path.stream().map(node -> {
-                try {
-                    return new URI(node.getUrl());
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList()));
-        } catch (MalformedURLException e) {
+            List<GraphNode> path = service.findPath(new URI(src), new URI(dst));
+            return ResponseEntity.ok(path.stream().map(GraphNode::getUrl).collect(Collectors.toList()));
+        } catch (MalformedURLException | URISyntaxException e) {
             return ResponseEntity.badRequest().build();
         } catch (GraphService.NodeNotFoundException e) {
-            return ResponseEntity.status(400).body(Collections.singletonList(e.getUri()));
+            return ResponseEntity.status(400).body(Collections.singletonList(e.getUri().toString()));
         }
     }
 

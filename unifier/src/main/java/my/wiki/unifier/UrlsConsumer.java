@@ -22,7 +22,10 @@ public class UrlsConsumer {
     public void onReceiveNewUrl(URI uri) {
         LOGGER.info("Received URL {}", uri);
         if (unifierService.isUnique(uri)) {
+            LOGGER.debug("URL {} is unique, publishing", uri);
             urlsProducer.produceUrl(uri);
+        } else {
+            LOGGER.debug("URL {} is NOT unique", uri);
         }
     }
 }

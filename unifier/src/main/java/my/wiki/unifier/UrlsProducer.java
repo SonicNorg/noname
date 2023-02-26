@@ -21,11 +21,6 @@ public class UrlsProducer {
         this.kafkaProperties = kafkaProperties;
     }
 
-    @PostConstruct
-    public void initial() throws URISyntaxException {
-        produceUrl(new URI("https://ru.wikipedia.org/wiki/Большая_семёрка"));
-    }
-
     public void produceUrl(URI uri) {
         LOGGER.info("Publishing uri: {}", uri);
         kafkaTemplate.send(kafkaProperties.getUniqueUrlsTopic(), uri);

@@ -19,7 +19,7 @@ public class PageProducer {
     }
 
     public void producePage(Page page) {
-        LOGGER.info("Publishing page: {} {}", page.getUri(), page.getLastChangeDate());
+        LOGGER.info("Publishing page: {}", page);
         kafkaTemplate.send(kafkaProperties.getGraphTopic(), page);
     }
 }

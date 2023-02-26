@@ -52,4 +52,13 @@ public class Page {
     public void setVisitedDate(LocalDate visitedDate) {
         this.visitedDate = visitedDate;
     }
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "uri=" + uri +
+                ", lastChangeDate=" + lastChangeDate +
+                ", visitedDate=" + visitedDate +
+                '}';
+    }
 }
